@@ -31,12 +31,34 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # -- Django Default -- #
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # -- Django Custom -- #
+    'django.contrib.sites',
+
+    # -- Authentication -- #
+    'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'allauth',
+    'allauth.account',
+
+    # -- CORS -- #
+    'corsheaders',
+
+    # -- Swagger -- #
+    'drf_yasg',
+
+    # -- APP -- #
+    'api',
+    'app'
 ]
 
 MIDDLEWARE = [
@@ -75,8 +97,12 @@ WSGI_APPLICATION = 'setup_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'lpp_mysql_dummy01',
+        'USER': 'root',
+        'PASSWORD': '1q2w3e4r5t',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -121,3 +147,40 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'api.CustomUser'
+
+REST_SESSION_LOGIN = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SITE_ID = 1
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_LOGOUT_ON_GET = False
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'lpp_auth'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+SWAGGER_SETTINGS = {
+'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'LOGOUT_URL': 'lpp_auth/logout',
+    'LOGIN_URL': 'lpp_auth/login'
+}
